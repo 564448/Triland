@@ -11,6 +11,11 @@ const ROWS = [
   ['island-padding', 'Island padding', 'px'],
 ];
 
+const SWITCHES = [
+  ['autohide', 'Auto hide', 'Slide the bar away; touch the top edge to bring it back'],
+  ['intellihide', 'Only when a window overlaps', 'Keep the bar visible while nothing is under it'],
+];
+
 export default class TrilandPrefs extends ExtensionPreferences {
   fillPreferencesWindow(window) {
     const settings = this.getSettings();
@@ -31,6 +36,14 @@ export default class TrilandPrefs extends ExtensionPreferences {
       });
       settings.bind(key, row, 'value', 0);
       group.add(row);
+    }
+
+    const behaviour = new Adw.PreferencesGroup({title: 'Auto hide'});
+    page.add(behaviour);
+    for (const [key, title, subtitle] of SWITCHES) {
+      const row = new Adw.SwitchRow({title, subtitle});
+      settings.bind(key, row, 'active', 0);
+      behaviour.add(row);
     }
     window.add(page);
   }

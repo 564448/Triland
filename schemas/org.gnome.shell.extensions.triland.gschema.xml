@@ -31,5 +31,13 @@
       <range min="0" max="32"/>
       <summary>Horizontal padding inside each island in px</summary>
     </key>
+    <key name="autohide" type="b">
+      <default>false</default>
+      <summary>Slide the bar out of view and reveal it from the top edge</summary>
+    </key>
+    <key name="intellihide" type="b">
+      <default>true</default>
+      <summary>With autohide on, only hide while a window overlaps the bar</summary>
+    </key>
   </schema>
 </schemalist>

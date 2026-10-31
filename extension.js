@@ -1,6 +1,8 @@
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
+import {AutoHide} from './autohide.js';
+
 const KEYS = [
   'panel-height',
   'margin-x',
@@ -9,6 +11,7 @@ const KEYS = [
   'opacity',
   'island-padding',
 ];
+const AUTOHIDE_KEYS = ['autohide', 'intellihide'];
 
 export default class Triland extends Extension {
   enable() {
@@ -18,9 +21,20 @@ export default class Triland extends Extension {
     );
     Main.panel.add_style_class_name('triland');
     this._apply();
+
+    this._autohide = new AutoHide(this._settings);
+    this._autohide.enable();
+    this._hideIds = AUTOHIDE_KEYS.map((k) =>
+      this._settings.connect(`changed::${k}`, () => this._autohide.refresh())
+    );
   }
 
   disable() {
+    this._hideIds.forEach((id) => this._settings.disconnect(id));
+    this._hideIds = null;
+    this._autohide.disable();
+    this._autohide = null;
+
     this._ids.forEach((id) => this._settings.disconnect(id));
     this._ids = null;
     this._settings = null;

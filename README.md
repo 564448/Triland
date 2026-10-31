@@ -18,6 +18,17 @@ A GNOME Shell extension that splits the top bar into three floating islands
 | `radius` | 18 | 0-32 | Island corner radius (px) |
 | `opacity` | 55 | 0-100 | Island background opacity (%) |
 | `island-padding` | 10 | 0-32 | Horizontal padding inside each island (px) |
+| `autohide` | off | on/off | Slide the bar out of view; touch the top edge to bring it back |
+| `intellihide` | on | on/off | With `autohide` on, hide only while a window overlaps the bar |
+
+### Auto hide
+
+With `autohide` on, the bar stays out of view and does not reserve screen
+space (maximized windows reach the top edge). Holding the pointer on the top
+edge for about 0.2 s slides it back in; it hides again when the pointer
+leaves. With `intellihide` on (default) the bar hides only while a window
+overlaps it. It stays visible in the Overview and while a panel menu is open.
+Only the primary monitor is handled.
 
 Open the preferences with `gnome-extensions prefs triland@knight.local`.
 
@@ -38,7 +49,8 @@ gnome-extensions enable triland@knight.local
 
 - Panel height and padding are applied through inline styles; if a theme
   overrides them, the values may not take effect.
-- Only checked visually on one machine (GNOME Shell 50.1).
+- Only checked on one machine (GNOME Shell 50.1). Auto hide was tested in a
+  headless session with a virtual pointer, not yet on a real desktop.
 
 ## License
 
