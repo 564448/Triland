@@ -1,0 +1,9 @@
+#panel.triland {
+  background-color: transparent;
+  box-shadow: none;
+  border: 0;
+}
+#panel.triland .panel-corner {
+  -panel-corner-radius: 0;
+  -panel-corner-opacity: 0;
+}

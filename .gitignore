@@ -1,0 +1,8 @@
+# Compiled on demand by GNOME Shell (44+)
+schemas/gschemas.compiled
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store

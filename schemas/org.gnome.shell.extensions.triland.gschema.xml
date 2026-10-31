@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.triland" path="/org/gnome/shell/extensions/triland/">
+    <key name="panel-height" type="i">
+      <default>36</default>
+      <range min="24" max="64"/>
+      <summary>Top bar height in px</summary>
+    </key>
+    <key name="margin-x" type="i">
+      <default>8</default>
+      <range min="0" max="64"/>
+      <summary>Distance of the outer islands from the screen sides in px</summary>
+    </key>
+    <key name="margin-top" type="i">
+      <default>4</default>
+      <range min="0" max="32"/>
+      <summary>Distance of the islands from the top edge in px</summary>
+    </key>
+    <key name="radius" type="i">
+      <default>18</default>
+      <range min="0" max="32"/>
+      <summary>Island corner radius in px</summary>
+    </key>
+    <key name="opacity" type="i">
+      <default>55</default>
+      <range min="0" max="100"/>
+      <summary>Island background opacity in percent</summary>
+    </key>
+    <key name="island-padding" type="i">
+      <default>10</default>
+      <range min="0" max="32"/>
+      <summary>Horizontal padding inside each island in px</summary>
+    </key>
+  </schema>
+</schemalist>

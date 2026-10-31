@@ -1,0 +1,8 @@
+{
+  "uuid": "triland@knight.local",
+  "name": "Triland",
+  "description": "Top bar split into three floating islands (left, center, right) with adjustable height, margins, radius and opacity.",
+  "shell-version": ["50"],
+  "settings-schema": "org.gnome.shell.extensions.triland",
+  "version": 1
+}
