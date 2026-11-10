@@ -39,5 +39,9 @@
       <default>true</default>
       <summary>With autohide on, only hide while a window overlaps the bar</summary>
     </key>
+    <key name="hide-clock" type="b">
+      <default>false</default>
+      <summary>Hide the middle island (clock and notifications menu) while no window is open, i.e. on the desktop</summary>
+    </key>
   </schema>
 </schemalist>

@@ -1,3 +1,5 @@
+import GLib from 'gi://GLib';
+import Meta from 'gi://Meta';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
@@ -11,6 +13,12 @@ const KEYS = [
   'opacity',
   'island-padding',
 ];
+const APP_WINDOW_TYPES = [
+  Meta.WindowType.NORMAL,
+  Meta.WindowType.DIALOG,
+  Meta.WindowType.MODAL_DIALOG,
+  Meta.WindowType.UTILITY,
+];
 const AUTOHIDE_KEYS = ['autohide', 'intellihide'];
 
 export default class Triland extends Extension {
@@ -22,6 +30,10 @@ export default class Triland extends Extension {
     Main.panel.add_style_class_name('triland');
     this._apply();
 
+    this._clockId = this._settings.connect('changed::hide-clock', () => this._applyClock());
+    this._watchDesktop();
+    this._applyClock();
+
     this._autohide = new AutoHide(this._settings);
     this._autohide.enable();
     this._hideIds = AUTOHIDE_KEYS.map((k) =>
@@ -30,6 +42,11 @@ export default class Triland extends Extension {
   }
 
   disable() {
+    this._settings.disconnect(this._clockId);
+    this._clockId = null;
+    this._unwatchDesktop();
+    Main.panel._centerBox.visible = true;
+
     this._hideIds.forEach((id) => this._settings.disconnect(id));
     this._hideIds = null;
     this._autohide.disable();
@@ -43,6 +60,49 @@ export default class Triland extends Extension {
     Main.panel.style = null;
     Main.layoutManager.panelBox.style = null;
     for (const box of this._islands()) box.style = null;
+  }
+
+  // The clock is hidden only on the desktop: no app window open on this
+  // workspace and the overview closed.
+  _applyClock() {
+    const hide = this._settings.get_boolean('hide-clock') &&
+      !Main.overview.visible && !this._windowOnDesktop();
+    Main.panel._centerBox.visible = !hide;
+  }
+
+  _windowOnDesktop() {
+    const ws = global.workspace_manager.get_active_workspace();
+    const primary = Main.layoutManager.primaryIndex;
+    return global.get_window_actors().some((a) => {
+      const w = a.get_meta_window();
+      return w && !w.minimized && APP_WINDOW_TYPES.includes(w.get_window_type()) &&
+        w.get_workspace() === ws && w.get_monitor() === primary;
+    });
+  }
+
+  _watchDesktop() {
+    const queue = () => {
+      if (this._clockTimer) return;
+      this._clockTimer = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+        this._clockTimer = null;
+        this._applyClock();
+        return GLib.SOURCE_REMOVE;
+      });
+    };
+    const wm = global.window_manager;
+    this._watch = [
+      [global.display, ['restacked', 'notify::focus-window'].map((n) => global.display.connect(n, queue))],
+      [wm, ['map', 'destroy', 'minimize', 'unminimize'].map((n) => wm.connect(n, queue))],
+      [global.workspace_manager, [global.workspace_manager.connect('active-workspace-changed', queue)]],
+      [Main.overview, ['showing', 'hidden'].map((n) => Main.overview.connect(n, queue))],
+    ];
+  }
+
+  _unwatchDesktop() {
+    if (this._clockTimer) GLib.source_remove(this._clockTimer);
+    this._clockTimer = null;
+    for (const [obj, ids] of this._watch) ids.forEach((id) => obj.disconnect(id));
+    this._watch = null;
   }
 
   _islands() {

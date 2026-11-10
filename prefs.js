@@ -45,6 +45,15 @@ export default class TrilandPrefs extends ExtensionPreferences {
       settings.bind(key, row, 'active', 0);
       behaviour.add(row);
     }
+
+    const clock = new Adw.PreferencesGroup({title: 'Clock'});
+    page.add(clock);
+    const hide = new Adw.SwitchRow({
+      title: 'Hide the clock on the desktop',
+      subtitle: 'Hides the middle island (clock and notification menu) while no app window is open; it shows normally inside apps',
+    });
+    settings.bind('hide-clock', hide, 'active', 0);
+    clock.add(hide);
     window.add(page);
   }
 }
